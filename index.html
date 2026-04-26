@@ -245,26 +245,26 @@
   .credits p { margin: 0 0 4px; }
   .credits strong { font-weight: 700; }
 
-  /* workshop list with year column aligned */
+  /* workshop list — neon green box, year column aligned */
   .workshop-list {
     list-style: none;
-    padding: 0;
-    margin: 22px 0 0;
+    padding: 16px 18px;
+    margin: 28px 0 0;
+    background: #22FF00;
+    color: #0a0a0a;
     font-size: 13px;
-    color: var(--muted);
+    line-height: 1.35;
   }
   .workshop-list li {
     display: grid;
     grid-template-columns: 90px 1fr;
     gap: 14px;
     padding: 6px 0;
-    border-top: 1px solid #eee;
-    line-height: 1.35;
+    border-top: 1px solid rgba(0,0,0,0.12);
   }
-  .workshop-list li:first-child { border-top: none; }
+  .workshop-list li:first-child { border-top: none; padding-top: 0; }
   .workshop-list .year {
     font-weight: 700;
-    color: #0a0a0a;
     font-variant-numeric: tabular-nums;
   }
   .corners .right { text-align: right; }
@@ -666,10 +666,9 @@
       <div class="credits">
         <h3>Credits</h3>
         <p><strong>Game concept, design &amp; direction:</strong> Sofia Strunden</p>
-        <p><strong>In collaboration with:</strong> Charlene M. (charlene.m@outlook.de)</p>
+        <p><strong>In collaboration with:</strong> Charlene M.</p>
         <p><strong>Voice over:</strong> [add name]</p>
         <p><strong>Sound design:</strong> [add name]</p>
-        <p><strong>UX design:</strong> [add name]</p>
         <p><strong>Special thanks to:</strong> Filmakademie Baden-Württemberg</p>
       </div>
     </aside>
@@ -713,11 +712,6 @@
         <li><span class="year">2021</span><span>Liquid Bodies — Kunsthalle Düsseldorf</span></li>
         <li><span class="year">2018 – 2020</span><span>Home sweet Home — KiR Konzeptbüro Essen</span></li>
       </ul>
-
-      <div class="credits">
-        <h3>Credits</h3>
-        <p>Concept &amp; instruction: Sofia Strunden</p>
-      </div>
     </aside>
 
     <div class="project-feed" data-feed>
