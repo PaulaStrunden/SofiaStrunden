@@ -136,6 +136,38 @@
     line-height: 1.35;
     padding: 8px 12px;
   }
+
+  /* ---- Mobile fixes ---- */
+  @media (max-width: 800px) {
+    /* hide project links in header on mobile, keep only Sofia + About */
+    header.site nav a[data-open="overlay-koerpern"],
+    header.site nav a[data-open="overlay-perle"],
+    header.site nav a[data-open="overlay-workshops"] { display: none; }
+    header.site nav { gap: 16px; font-size: 16px; }
+
+    /* hide left contact chip on mobile, only show right contact links */
+    .corners .left-chip { display: none; }
+    .corners { padding: 10px 12px; flex-direction: row; justify-content: flex-end; }
+
+    /* overlays must scroll their own content vertically on mobile */
+    .overlay { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .overlay-grid { height: auto; padding: 16px; }
+
+    /* close button bigger and more visible on mobile */
+    .overlay-close {
+      top: 12px; right: 12px;
+      width: 48px; height: 48px;
+      font-size: 32px;
+      background: var(--panel);
+      border-color: #0a0a0a;
+      color: #0a0a0a;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    /* tighter project layout on mobile */
+    .project-layout { padding: 12px; gap: 12px; }
+    .project-intro { padding: 22px 20px; }
+  }
   .corners a { text-decoration: underline; text-underline-offset: 2px; }
   .corners .right { text-align: right; }
 
@@ -221,8 +253,9 @@
   .feed-item.crop-top { aspect-ratio: 12 / 5; overflow: hidden; }
   .feed-item.crop-top img { width: 100%; height: auto; display: block; }
   @media (max-width: 800px) {
-    .project-feed { grid-template-columns: 1fr; gap: 16px; }
+    .project-feed { grid-template-columns: 1fr; gap: 16px; padding: 0 0 80px 0; }
     .feed-item, .feed-item.half, .feed-item.third { grid-column: span 1; }
+    .feed-item.crop-top { aspect-ratio: auto; max-height: 240px; }
   }
   .project-feed::-webkit-scrollbar { width: 8px; }
   .project-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,.35); border-radius: 4px; }
@@ -472,7 +505,7 @@
 
 <!-- corner contact bar -->
 <div class="corners">
-  <div>
+  <div class="left-chip">
     © Website Design &amp; Concept: Paula Strunden, 2026
   </div>
   <div class="right">
@@ -512,7 +545,7 @@
       </figure>
       <figure class="feed-item"><img src="Koerpern/JPEG 3D/Charly_Tpose.jpg" alt="Charly T-pose"><figcaption>Charly, T-pose</figcaption></figure>
 
-      <figure class="feed-item crop-top"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-38-13.jpg" alt="Flügelmensch, Ausstellung"></figure>
+      <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/ChatGPT Image Apr 26, 2026, 02_10_36 PM.png" alt="Flügelmensch, Ausstellung"></figure>
       <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-39-11.jpg" alt="Flügelmensch, Ausstellung"></figure>
       <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-39-48.jpg" alt="Flügelmensch, Ausstellung"></figure>
 
