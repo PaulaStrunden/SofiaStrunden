@@ -19,7 +19,7 @@
 <meta property="og:url" content="https://www.sofiastrunden.com/">
 <meta property="og:title" content="Sofia Strunden">
 <meta property="og:description" content="Graphic design, interactive media, workshops. Köln.">
-<meta property="og:image" content="https://www.sofiastrunden.com/Koerpern/Body02_Fl%C3%BCgelmensch/ChatGPT%20Image%20Apr%2026,%202026,%2002_20_49%20PM.png">
+<meta property="og:image" content="https://www.sofiastrunden.com/Koerpern/Body02_Fl%C3%BCgelmensch/ChatGPT%20Image%20Apr%2026,%202026,%2002_20_49%20PM.jpg">
 <meta property="og:image:alt" content="Koerpern, interactive installation projected on a green LED tower">
 <meta property="og:locale" content="en_GB">
 <meta property="og:site_name" content="Sofia Strunden">
@@ -28,9 +28,37 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Sofia Strunden">
 <meta name="twitter:description" content="Graphic design, interactive media, workshops. Köln.">
-<meta name="twitter:image" content="https://www.sofiastrunden.com/Koerpern/Body02_Fl%C3%BCgelmensch/ChatGPT%20Image%20Apr%2026,%202026,%2002_20_49%20PM.png">
+<meta name="twitter:image" content="https://www.sofiastrunden.com/Koerpern/Body02_Fl%C3%BCgelmensch/ChatGPT%20Image%20Apr%2026,%202026,%2002_20_49%20PM.jpg">
 
 <meta name="theme-color" content="#22FF00">
+
+<!-- Structured data (Google) — Person + portfolio works -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Sofia Strunden",
+  "jobTitle": "Graphic Designer, Creative Concept Developer, Crossover-Media Instructor",
+  "url": "https://www.sofiastrunden.com/",
+  "image": "https://www.sofiastrunden.com/Koerpern/Body02_Fl%C3%BCgelmensch/ChatGPT%20Image%20Apr%2026,%202026,%2002_20_49%20PM.jpg",
+  "email": "mailto:sofia@strunden.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Köln", "addressCountry": "DE" },
+  "sameAs": [
+    "https://www.instagram.com/sofiazfia/",
+    "https://www.linkedin.com/in/sofia-strunden-transmediagames3000/",
+    "https://vimeo.com/sofiastrunden"
+  ],
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "Filmakademie Baden-Württemberg" },
+    { "@type": "CollegeOrUniversity", "name": "Folkwang Universität der Künste" }
+  ],
+  "knowsAbout": ["Graphic Design", "Interactive Media", "3D Modelling", "Game Design", "Print Media", "Body Awareness", "Creative Education"],
+  "workExample": [
+    { "@type": "CreativeWork", "name": "Koerpern", "description": "Interactive installation and Bachelor thesis on expanded body awareness", "datePublished": "2021" },
+    { "@type": "VideoGame", "name": "Perle 3000", "description": "3D mobile game (Diploma project, Filmakademie Baden-Württemberg)", "datePublished": "2025" }
+  ]
+}
+</script>
 <style>
   :root {
     --bg: #000000;        /* black fallback behind the video */
@@ -363,25 +391,6 @@
     white-space: nowrap;
   }
 
-  /* numbered badges on every image — counter resets per overlay */
-  .overlay { counter-reset: imgnum; }
-  .feed-item::before {
-    position: absolute;
-    top: 8px; left: 8px;
-    background: #ffffff;
-    color: #0a0a0a;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 3px;
-    z-index: 2;
-    letter-spacing: 0.02em;
-    pointer-events: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
-  }
-  #overlay-koerpern  .feed-item::before { content: "K " counter(imgnum); }
-  #overlay-perle     .feed-item::before { content: "P " counter(imgnum); }
-  #overlay-workshops .feed-item::before { content: "W " counter(imgnum); }
 
   .hcol.section {
     width: 220px;
@@ -574,9 +583,9 @@
         <video src="Koerpern/Body02_Flügelmensch/210704_Flügelmensch.mp4" autoplay loop muted playsinline></video>
         <figcaption>Flügelmensch, video</figcaption>
       </figure>
-      <figure class="feed-item"><img src="Koerpern/JPEG 3D/Charly_Tpose.jpg" alt="Charly T-pose"><figcaption>Charly, T-pose</figcaption></figure>
+      <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/ChatGPT Image Apr 26, 2026, 02_20_49 PM.jpg" alt="Flügelmensch, Ausstellung"></figure>
 
-      <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/ChatGPT Image Apr 26, 2026, 02_20_49 PM.png" alt="Flügelmensch, Ausstellung"></figure>
+      <figure class="feed-item"><img src="Koerpern/JPEG 3D/Charly_Tpose.jpg" alt="Charly T-pose"><figcaption>Charly, T-pose</figcaption></figure>
       <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-39-11.jpg" alt="Flügelmensch, Ausstellung"></figure>
       <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-39-48.jpg" alt="Flügelmensch, Ausstellung"></figure>
 
@@ -613,12 +622,14 @@
       <figure class="feed-item">
         <video src="Perle3000/EXTRA/navigate.mp4" autoplay loop muted playsinline></video>
       </figure>
-      <figure class="feed-item half"><img src="Perle3000/PNG/StandBase_01.png" alt="Stand"></figure>
-      <figure class="feed-item half"><img src="Perle3000/PNG/RunBase_01.png" alt="Run"></figure>
-      <figure class="feed-item"><img src="Perle3000/EXTRA/characteroverview.png" alt="Character overview"></figure>
-      <figure class="feed-item"><img src="Perle3000/PNG/JumpBase_01.png" alt="Jump"><figcaption>Jump cycle</figcaption></figure>
-      <figure class="feed-item"><img src="Perle3000/PNG/Attack5Behind.png" alt="Attack 5"><figcaption>Attack 5</figcaption></figure>
-      <figure class="feed-item"><img src="Perle3000/PNG/CrushSideView.png" alt="Crush side"><figcaption>Crush, side</figcaption></figure>
+      <figure class="feed-item half"><img src="Perle3000/PNG/StandBase_01.jpg" alt="Stand"></figure>
+      <figure class="feed-item half"><img src="Perle3000/PNG/RunBase_01.jpg" alt="Run"></figure>
+      <figure class="feed-item half"><img src="Perle3000/EXTRA/characteroverview.jpg" alt="Character overview"></figure>
+      <figure class="feed-item half"><img src="Perle3000/EXTRA/Leo_UV_Painting.jpg" alt="Leo, making-of UV painting"></figure>
+      <figure class="feed-item"><img src="Perle3000/PNG/JumpBase_01.jpg" alt="Jump"></figure>
+      <figure class="feed-item"><img src="Perle3000/PNG/Attack5Behind.png" alt="Attack"></figure>
+      <figure class="feed-item"><img src="Perle3000/PNG/EffectFromGameView.png" alt="In-game view"></figure>
+      <figure class="feed-item"><img src="Perle3000/PNG/CrushSideView.png" alt="Crush"></figure>
     </div>
 
   </div>
