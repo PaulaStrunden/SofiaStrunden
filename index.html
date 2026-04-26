@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sofia Strunden</title>
+<style>
+  :root {
+    --bg: #000000;        /* black fallback behind the video */
+    --panel: #ffffff;
+    --fg: #0a0a0a;
+    --on-bg: #ffffff;     /* white text reads on the video */
+    --muted: #4a4a4a;
+    --accent: #6600FF;    /* indigo accent for buttons */
+    --gap: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { margin: 0; padding: 0; background: #000; }
+  body { margin: 0; padding: 0; background: transparent; color: var(--fg); }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body.no-scroll { overflow: hidden; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { opacity: .55; }
+
+  /* page chrome — transparent over the video, black text */
+  header.site {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 22px 28px 10px;
+    background: transparent;
+    color: #0a0a0a;
+  }
+  header.site .name {
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  header.site nav {
+    display: flex; gap: 22px; font-size: 18px; font-weight: 500;
+  }
+
+  main { padding: 0 28px 120px; }
+
+  /* fullscreen looping background video for the homepage */
+  .page-bg-video {
+    position: fixed; inset: 0;
+    width: 100vw; height: 100vh;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+  }
+  /* keep all content above the video */
+  header.site, main, .corners { position: relative; z-index: 1; }
+  body.no-scroll .page-bg-video { display: none; }
+
+  /* hero is the full first view; video plays behind it */
+  .hero {
+    min-height: calc(100vh - 80px);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 40px 0 60px;
+    max-width: 1100px;
+    color: #0a0a0a;
+  }
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(44px, 7vw, 96px);
+    font-weight: 700;
+    line-height: .98;
+    letter-spacing: -0.035em;
+  }
+  .hero .tagline {
+    margin: 18px 0 0;
+    font-size: clamp(18px, 1.6vw, 22px);
+    font-weight: 500;
+    max-width: 800px;
+    line-height: 1.2;
+  }
+
+  /* project rows on home page */
+  .projects { display: grid; gap: 10px; margin-top: 28px; }
+  .project-row {
+    all: unset;
+    cursor: pointer;
+    background: var(--panel);
+    color: var(--fg);
+    padding: 22px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: transform .15s ease;
+  }
+  .project-row:hover { transform: translateX(4px); }
+  .project-row .row-text {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .project-row .title {
+    font-size: clamp(34px, 5vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+  .project-row .meta {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1;
+  }
+  .project-row .toggle {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: .9;
+  }
+
+  /* corner contact bar */
+  .corners {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    padding: 14px 18px;
+    pointer-events: none;
+    font-size: 12px;
+    z-index: 4;
+    color: var(--on-bg);
+  }
+  .corners > div {
+    background: var(--panel);
+    color: var(--fg);
+    pointer-events: auto;
+    line-height: 1.35;
+    padding: 8px 12px;
+  }
+  .corners a { text-decoration: underline; text-underline-offset: 2px; }
+  .corners .right { text-align: right; }
+
+  /* ---- Overlay shell (used by project + About) ---- */
+  .overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 50;
+    display: none;
+  }
+  .overlay.open { display: block; }
+  /* About / Index overlay uses the neon lime instead of black */
+  #overlay-about { background: #22FF00; }
+  #overlay-about .overlay-close { border-color: #0a0a0a; color: #0a0a0a; }
+  .overlay-close {
+    position: fixed; top: 18px; right: 22px;
+    font-size: 26px; cursor: pointer;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--on-bg);
+    color: var(--on-bg);
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; font-weight: 500;
+    background: transparent;
+    z-index: 60;
+  }
+  .overlay-close:hover { background: rgba(255,255,255,0.1); }
+
+  /* ---- Project overlay: left intro fixed, right feed scrolls ---- */
+  .project-layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 380px) 1fr;
+    gap: 18px;
+    padding: 22px 22px 22px 22px;
+    height: 100vh;
+  }
+  .project-intro {
+    background: var(--panel);
+    color: var(--fg);
+    padding: 32px 30px;
+    overflow-y: auto;
+    height: calc(100vh - 44px);
+  }
+  .project-intro h2 {
+    margin: 0 0 18px;
+    font-size: clamp(34px, 4vw, 56px);
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: -0.03em;
+  }
+  .project-intro .meta {
+    font-size: 13px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .project-intro p {
+    font-size: 17px;
+    line-height: 1.3;
+    margin: 0 0 14px;
+  }
+  .project-intro .links {
+    margin-top: 18px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .project-feed {
+    overflow-y: auto;
+    height: calc(100vh - 44px);
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 28px;
+    padding: 8px 12px 60px 0;
+    scroll-behavior: smooth;
+    align-content: start;
+  }
+  .feed-item { grid-column: span 6; }
+  .feed-item.half { grid-column: span 3; }
+  .feed-item.third { grid-column: span 2; }
+  /* crop-top: only show the top third of the image */
+  .feed-item.crop-top { aspect-ratio: 12 / 5; overflow: hidden; }
+  .feed-item.crop-top img { width: 100%; height: auto; display: block; }
+  @media (max-width: 800px) {
+    .project-feed { grid-template-columns: 1fr; gap: 16px; }
+    .feed-item, .feed-item.half, .feed-item.third { grid-column: span 1; }
+  }
+  .project-feed::-webkit-scrollbar { width: 8px; }
+  .project-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,.35); border-radius: 4px; }
+
+  .feed-item {
+    margin: 0;
+    background: transparent;
+    position: relative;
+    counter-increment: imgnum;
+  }
+  .feed-item img,
+  .feed-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .feed-item figcaption { display: none; }
+  .feed-section {
+    color: var(--on-bg);
+    padding: 8px 4px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 800px) {
+    .project-layout {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+    .project-intro, .project-feed { height: auto; overflow: visible; }
+  }
+
+  /* download button — strong lime from the header palette */
+  .btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: #22FF00;
+    color: #0a0a0a;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    transition: transform .15s ease, background .15s ease;
+    margin-top: 14px;
+    line-height: 1;
+  }
+  .btn-download:hover { transform: translateY(-1px); opacity: 1; background: #1cd900; }
+  .btn-download .arrow {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #0a0a0a;
+    font-size: 13px; line-height: 1;
+  }
+
+  .hcol.media { background: transparent; position: relative; }
+  .hcol.media img,
+  .hcol.media video {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+  .hcol.media figcaption {
+    position: absolute;
+    bottom: -24px; left: 0;
+    font-size: 11px;
+    color: var(--on-bg);
+    opacity: .8;
+    white-space: nowrap;
+  }
+
+  /* numbered badges on every image — counter resets per overlay */
+  .overlay { counter-reset: imgnum; }
+  .feed-item::before {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: #ffffff;
+    color: #0a0a0a;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 3px;
+    z-index: 2;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  }
+  #overlay-koerpern  .feed-item::before { content: "K " counter(imgnum); }
+  #overlay-perle     .feed-item::before { content: "P " counter(imgnum); }
+  #overlay-workshops .feed-item::before { content: "W " counter(imgnum); }
+
+  .hcol.section {
+    width: 220px;
+    background: transparent;
+    color: var(--on-bg);
+    padding: 20px 18px 20px 0;
+  }
+  .hcol.section h3 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+  .hcol.section p {
+    font-size: 13px;
+    color: rgba(255,255,255,.85);
+    margin: 0;
+  }
+
+  .hcol.outro {
+    width: min(420px, 80vw);
+    padding: 32px 30px;
+    justify-content: center;
+  }
+  .hcol.outro h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .hcol.outro p { font-size: 15px; line-height: 1.3; }
+  .hcol.outro a { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* fallback for narrow screens — vertical stack */
+  @media (max-width: 800px) {
+    .hscroll {
+      flex-direction: column;
+      height: auto;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 60px 18px;
+      gap: 12px;
+    }
+    .hcol { height: auto; width: 100% !important; flex: 0 0 auto; }
+    .hcol.media img, .hcol.media video { width: 100%; height: auto; }
+    .hcol.section { border-left: none; border-top: 1px solid rgba(255,255,255,.4); padding: 14px 0 0; }
+    .hcol.media figcaption { position: static; padding: 6px 4px; }
+  }
+
+  /* ---- About / Index overlay ---- */
+  .overlay-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    padding: 22px;
+    height: 100vh;
+  }
+  @media (max-width: 800px) {
+    .overlay-grid { grid-template-columns: 1fr; height: auto; }
+  }
+  .overlay-panel {
+    background: var(--panel);
+    padding: 26px 30px;
+    overflow: auto;
+  }
+  .overlay-panel h2 {
+    margin: 0 0 18px;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .index-list {
+    display: grid; gap: 22px;
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  .index-list .row .date,
+  .index-list .row .title,
+  .index-list .row .place { display: block; }
+  .index-list .row .place { color: var(--muted); }
+  .index-list .row a { text-decoration: underline; text-underline-offset: 3px; }
+  .about-text {
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+  .about-text p { margin: 0 0 14px; }
+  .about-text .indent { display: inline-block; width: 2.4em; }
+  .about-text em { font-style: italic; }
+</style>
+</head>
+<body>
+
+<video class="page-bg-video" autoplay loop muted playsinline preload="auto">
+  <source src="Koerpern/Body02_Fl%C3%BCgelmensch/210704_Fl%C3%BCgelmensch.mp4" type="video/mp4">
+  <source src="Koerpern/Body02_Flügelmensch/210704_Flügelmensch.mp4" type="video/mp4">
+</video>
+
+<header class="site">
+  <div class="name"><a href="#top">Sofia Strunden</a></div>
+  <nav>
+    <a href="#" data-open="overlay-koerpern">Koerpern</a>
+    <a href="#" data-open="overlay-perle">Perle 3000</a>
+    <a href="#" data-open="overlay-workshops">Workshops</a>
+    <a href="#" data-open="overlay-about">About / Index</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <h1>Sofia Strunden</h1>
+    <p class="tagline">
+      Graphic designer, creative concept developer and crossover-media instructor.
+      Working between print, illustration, 3D and interactive media — Köln.
+    </p>
+  </section>
+
+  <section class="projects">
+
+    <button class="project-row" data-open="overlay-koerpern">
+      <span class="row-text">
+        <span class="title">Koerpern</span>
+        <span class="meta">Bachelor · Installation &amp; Thesis · Folkwang 2021</span>
+      </span>
+      <span class="toggle">→</span>
+    </button>
+
+    <button class="project-row" data-open="overlay-perle">
+      <span class="row-text">
+        <span class="title">Perle 3000</span>
+        <span class="meta">3D Mobile Game · Filmakademie 2024 – 2025</span>
+      </span>
+      <span class="toggle">→</span>
+    </button>
+
+    <button class="project-row" data-open="overlay-workshops">
+      <span class="row-text">
+        <span class="title">Workshops</span>
+        <span class="meta">Body · print · code &amp; craft · 2018 – heute</span>
+      </span>
+      <span class="toggle">→</span>
+    </button>
+
+  </section>
+
+</main>
+
+<!-- corner contact bar -->
+<div class="corners">
+  <div>
+    © Website Design &amp; Concept: Paula Strunden, 2026
+  </div>
+  <div class="right">
+    Köln, Germany — <a href="#" data-open="overlay-about">About / Index</a><br>
+    <a href="https://www.instagram.com/sofiazfia/" target="_blank" rel="noopener">Instagram</a> ·
+    <a href="https://www.linkedin.com/in/sofia-strunden-transmediagames3000/" target="_blank" rel="noopener">LinkedIn</a> ·
+    <a href="https://vimeo.com/sofiastrunden" target="_blank" rel="noopener">Vimeo</a> ·
+    <a href="mailto:sofia@strunden.com">Email</a>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- KOERPERN — project overlay     -->
+<!-- ============================== -->
+<aside class="overlay" id="overlay-koerpern" aria-hidden="true">
+  <button class="overlay-close" data-close aria-label="Close">×</button>
+  <div class="project-layout">
+
+    <aside class="project-intro">
+      <span class="meta">Bachelor Diploma · Folkwang 2021</span>
+      <h2>Koerpern</h2>
+      <p>An interactive installation and written thesis. 3D avatars — modelled
+      from body sketches and motion captured with the XBox Kinect — meet the
+      viewer as a translation of interior experience into space.</p>
+      <p>Cinema4D · Adobe CC · XBox Kinect.</p>
+      <a class="btn-download" href="Koerpern/PDF: THESIS/SofiaStrunden_Thesis_koerpern.pdf" download>
+        Download Thesis (PDF)
+        <span class="arrow">↓</span>
+      </a>
+    </aside>
+
+    <div class="project-feed" data-feed>
+      <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/Flügelmensch0697.png" alt="Flügelmensch"><figcaption>Body 02, Flügelmensch</figcaption></figure>
+      <figure class="feed-item">
+        <video src="Koerpern/Body02_Flügelmensch/210704_Flügelmensch.mp4" autoplay loop muted playsinline></video>
+        <figcaption>Flügelmensch, video</figcaption>
+      </figure>
+      <figure class="feed-item"><img src="Koerpern/JPEG 3D/Charly_Tpose.jpg" alt="Charly T-pose"><figcaption>Charly, T-pose</figcaption></figure>
+
+      <figure class="feed-item crop-top"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-38-13.jpg" alt="Flügelmensch, Ausstellung"></figure>
+      <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-39-11.jpg" alt="Flügelmensch, Ausstellung"></figure>
+      <figure class="feed-item"><img src="Koerpern/Body02_Flügelmensch/PHOTO-2026-04-26-13-39-48.jpg" alt="Flügelmensch, Ausstellung"></figure>
+
+      <figure class="feed-item"><img src="Koerpern/Ausstellungsdokumentation/jpg/_DSC4964.jpg" alt="Ausstellung"></figure>
+      <figure class="feed-item"><img src="Koerpern/Ausstellungsdokumentation/jpg/_DSC5047.jpg" alt="Ausstellung"></figure>
+      <figure class="feed-item"><img src="Koerpern/Ausstellungsdokumentation/jpg/_DSC5048.jpg" alt="Ausstellung"></figure>
+      <figure class="feed-item"><img src="Koerpern/Ausstellungsdokumentation/jpg/_DSC5088.jpg" alt="Ausstellung"></figure>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ============================== -->
+<!-- PERLE 3000 — project overlay   -->
+<!-- ============================== -->
+<aside class="overlay" id="overlay-perle" aria-hidden="true">
+  <button class="overlay-close" data-close aria-label="Close">×</button>
+  <div class="project-layout">
+
+    <aside class="project-intro">
+      <span class="meta">Diplomprojekt · Filmakademie 2024 – 2025</span>
+      <h2>Perle 3000</h2>
+      <p>3D mobile game made as the Diploma project at Filmakademie
+      Baden-Württemberg. Game concept, game design and team direction by
+      Sofia Strunden.</p>
+      <p>Unity3D · Blender · Adobe CC.</p>
+      <a class="btn-download" href="Perle3000/PDF/Perle 3000_GDD.pdf" download>
+        Download Game Design Doc
+        <span class="arrow">↓</span>
+      </a>
+    </aside>
+
+    <div class="project-feed" data-feed>
+      <figure class="feed-item">
+        <video src="Perle3000/EXTRA/navigate.mp4" autoplay loop muted playsinline></video>
+      </figure>
+      <figure class="feed-item half"><img src="Perle3000/PNG/StandBase_01.png" alt="Stand"></figure>
+      <figure class="feed-item half"><img src="Perle3000/PNG/RunBase_01.png" alt="Run"></figure>
+      <figure class="feed-item"><img src="Perle3000/EXTRA/characteroverview.png" alt="Character overview"></figure>
+      <figure class="feed-item"><img src="Perle3000/PNG/JumpBase_01.png" alt="Jump"><figcaption>Jump cycle</figcaption></figure>
+      <figure class="feed-item"><img src="Perle3000/PNG/Attack5Behind.png" alt="Attack 5"><figcaption>Attack 5</figcaption></figure>
+      <figure class="feed-item"><img src="Perle3000/PNG/CrushSideView.png" alt="Crush side"><figcaption>Crush, side</figcaption></figure>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ============================== -->
+<!-- WORKSHOPS — project overlay    -->
+<!-- ============================== -->
+<aside class="overlay" id="overlay-workshops" aria-hidden="true">
+  <button class="overlay-close" data-close aria-label="Close">×</button>
+  <div class="project-layout">
+
+    <aside class="project-intro">
+      <span class="meta">Praxis · 2018 –</span>
+      <h2>Workshops</h2>
+      <p>Sofia entwickelt und leitet Workshops zwischen Zeichnung, Druck,
+      3D, Elektronik und Code — mit Jugendlichen, jungen Erwachsenen und
+      Studierenden. Im Zentrum steht ein Körper- und Wahrnehmungstraining,
+      das innere Zustände in Linien, Farben und Formen übersetzt.</p>
+      <p><em>Think with your hands, celebrate mistakes, and let ideas grow.</em></p>
+      <ul style="font-size:13px; color: var(--muted); margin-top: 22px; list-style: none; padding: 0; line-height: 1.6;">
+        <li>Tinkertank Mentoring (2022 – )</li>
+        <li>Walking the City — STORE Projects London (2022)</li>
+        <li>Expanded Bodies — STORE Projects London (2022)</li>
+        <li>Paint your Music — Folkwang (2022)</li>
+        <li>Liquid Bodies — Kunsthalle Düsseldorf (2021)</li>
+        <li>Home sweet Home — KiR Konzeptbüro Essen (2018 – 2020)</li>
+      </ul>
+    </aside>
+
+    <div class="project-feed" data-feed>
+      <figure class="feed-item"><video src="WORKSHOPS/d0275ff9-f12a-4ea8-a843-a30bacb43c4b.MP4" autoplay loop muted playsinline></video></figure>
+      <figure class="feed-item"><img src="WORKSHOPS/PHOTO-2026-04-26-13-38-49.jpg" alt="Workshop"></figure>
+      <figure class="feed-item"><img src="WORKSHOPS/PHOTO-2026-04-26-13-39-27.jpg" alt="Workshop"></figure>
+      <figure class="feed-item"><img src="Koerpern/Ausstellungsdokumentation/jpg/_DSC5077.jpg" alt="Workshop"></figure>
+      <figure class="feed-item"><img src="Koerpern/Ausstellungsdokumentation/jpg/_DSC5082.jpg" alt="Workshop"></figure>
+
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Charlotte.jpg" alt="Charlotte"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Flavienne.jpg" alt="Flavienne"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Jasmin.jpg" alt="Jasmin"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Jonas.jpg" alt="Jonas"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Kathrin.jpg" alt="Kathrin"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Kaya.jpg" alt="Kaya"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Leo.jpg" alt="Leo"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Leonard.jpg" alt="Leonard"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_LilliMalou.jpg" alt="Lilli Malou"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Marie.jpg" alt="Marie"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Shanja.jpg" alt="Shanja"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 1) Meditation, Introspektion und Zeichnung/1_Sharanya.jpg" alt="Sharanya"></figure>
+
+      <figure class="feed-item third"><img src="Koerpern/II. 2) Übertragung von Bildelementen in Körperskizze/2_Anouchka.jpg" alt="Anouchka"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 2) Übertragung von Bildelementen in Körperskizze/2_Charlotte.jpg" alt="Charlotte"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 2) Übertragung von Bildelementen in Körperskizze/2_Jasmin.jpg" alt="Jasmin"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 2) Übertragung von Bildelementen in Körperskizze/2_Jonas.jpg" alt="Jonas"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 2) Übertragung von Bildelementen in Körperskizze/2_Kathrin.jpg" alt="Kathrin"></figure>
+      <figure class="feed-item third"><img src="Koerpern/II. 2) Übertragung von Bildelementen in Körperskizze/2_Leonard.jpg" alt="Leonard"></figure>
+
+      <figure class="feed-item half"><img src="Koerpern/körperskizzen/Anouchka_wolkenrosa.jpg" alt="Anouchka"></figure>
+      <figure class="feed-item half"><img src="Koerpern/körperskizzen/Flavienne_grün.jpg" alt="Flavienne"></figure>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ============================== -->
+<!-- ABOUT / INDEX overlay          -->
+<!-- ============================== -->
+<aside class="overlay" id="overlay-about" aria-hidden="true">
+  <button class="overlay-close" data-close aria-label="Close">×</button>
+  <div class="overlay-grid">
+
+    <div class="overlay-panel">
+      <h2>Index</h2>
+      <div class="index-list">
+
+        <div class="row">
+          <span class="date">2024 – 2025</span>
+          <span class="title">Perle 3000, 3D Mobile Game</span>
+          <span class="place">Filmakademie Baden-Württemberg</span>
+          <a href="#" data-open="overlay-perle">Open</a>
+        </div>
+
+        <div class="row">
+          <span class="date">2024</span>
+          <span class="title">Phädra in Flammen, Theater Piece</span>
+          <span class="place">Academy for Performing Arts</span>
+        </div>
+
+        <div class="row">
+          <span class="date">2023</span>
+          <span class="title">Encounter of a different kind, Interactive Installation</span>
+          <span class="place">Filmakademie Baden-Württemberg</span>
+        </div>
+
+        <div class="row">
+          <span class="date">2023</span>
+          <span class="title">Haut Abziehen, Wände Streichen</span>
+          <span class="place">Academy for Performing Arts</span>
+        </div>
+
+        <div class="row">
+          <span class="date">2022 – 2023</span>
+          <span class="title">Code Rat, Multiplayer VR Game</span>
+          <span class="place">Filmakademie Baden-Württemberg</span>
+        </div>
+
+        <div class="row">
+          <span class="date">2022 –</span>
+          <span class="title">Tinkertank Mentoring</span>
+          <span class="place">Interactive Media Foundation</span>
+          <a href="#" data-open="overlay-workshops">Open</a>
+        </div>
+
+        <div class="row">
+          <span class="date">2022</span>
+          <span class="title">Walking the City &amp; Expanded Bodies</span>
+          <span class="place">STORE Projects, London</span>
+        </div>
+
+        <div class="row">
+          <span class="date">2021</span>
+          <span class="title">Koerpern, Bachelor Diploma</span>
+          <span class="place">Folkwang Universität der Künste</span>
+          <a href="#" data-open="overlay-koerpern">Open</a>
+        </div>
+
+        <div class="row">
+          <span class="date">2021</span>
+          <span class="title">Liquid Bodies, Interactive Installation</span>
+          <span class="place">Kunsthalle Düsseldorf</span>
+        </div>
+
+        <div class="row">
+          <span class="date">2021</span>
+          <span class="title">Q2 Artist in Residence</span>
+          <span class="place">MQ Vienna</span>
+        </div>
+
+        <div class="row">
+          <span class="date">2020</span>
+          <span class="title">Pact Artist in Residence</span>
+          <span class="place">Pact Zollverein</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="overlay-panel">
+      <h2>About</h2>
+      <div class="about-text">
+        <p>Sofia Strunden is a graphic designer, creative concept developer and crossover-media instructor based in Köln.</p>
+        <p><span class="indent"></span>Her practice moves between print, illustration, 3D and interactive media — from analogue Risograph and clay to Blender, Cinema4D, Unity and motion capture. She is interested in the body as material: how interior states, breath and attention can be drawn, scanned, modelled and played.</p>
+        <p>Recent work ranges from the interactive installation and Bachelor thesis <em>koerpern</em> (Folkwang Universität der Künste, 2021) to the 3D mobile game <em>Perle 3000</em> (Filmakademie Baden-Württemberg, 2024 – 2025).</p>
+        <p>Alongside her own projects she teaches and mentors at Tinkertank and STORE Projects London, working with young people in the space between craft, electronics, code and design — thinking with the hands, and letting ideas grow from mistakes.</p>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+<script>
+(function () {
+  const body = document.body;
+
+  function openOverlay(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // close any other open overlay
+    document.querySelectorAll('.overlay.open').forEach(o => {
+      if (o !== el) { o.classList.remove('open'); o.setAttribute('aria-hidden','true'); }
+    });
+    el.classList.add('open');
+    el.setAttribute('aria-hidden','false');
+    body.classList.add('no-scroll');
+    // reset scroll
+    const track = el.querySelector('[data-hscroll]');
+    if (track) track.scrollLeft = 0;
+    const panels = el.querySelectorAll('.overlay-panel');
+    panels.forEach(p => p.scrollTop = 0);
+  }
+
+  function closeAll() {
+    document.querySelectorAll('.overlay.open').forEach(o => {
+      o.classList.remove('open');
+      o.setAttribute('aria-hidden','true');
+    });
+    body.classList.remove('no-scroll');
+  }
+
+  // open triggers
+  document.querySelectorAll('[data-open]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      openOverlay(el.dataset.open);
+    });
+  });
+
+  // close triggers
+  document.querySelectorAll('[data-close]').forEach(el => {
+    el.addEventListener('click', closeAll);
+  });
+
+  // ESC closes
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+
+  // Vertical wheel → horizontal scroll inside hscroll
+  document.querySelectorAll('[data-hscroll]').forEach(track => {
+    track.addEventListener('wheel', e => {
+      // Only intercept if wheel is mostly vertical
+      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      e.preventDefault();
+      track.scrollLeft += e.deltaY;
+    }, { passive: false });
+  });
+
+  // Open from URL hash on load (e.g. #perle)
+  function openFromHash() {
+    const map = { '#koerpern':'overlay-koerpern', '#perle':'overlay-perle', '#workshops':'overlay-workshops', '#about':'overlay-about' };
+    const target = map[window.location.hash];
+    if (target) openOverlay(target);
+  }
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
+})();
+</script>
+
+</body>
+</html>
