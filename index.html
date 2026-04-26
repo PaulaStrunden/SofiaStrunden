@@ -230,8 +230,9 @@
   .credits {
     margin-top: 28px;
     padding: 16px 18px;
-    background: #22FF00;
-    color: #0a0a0a;
+    background: transparent;
+    border: 2px solid #22FF00;
+    color: var(--fg);
     font-size: 12px;
     line-height: 1.5;
   }
@@ -245,27 +246,43 @@
   .credits p { margin: 0 0 4px; }
   .credits strong { font-weight: 700; }
 
-  /* workshop list — neon green box, year column aligned */
+  /* workshop list — neon green outline, two-line title/place */
   .workshop-list {
     list-style: none;
     padding: 16px 18px;
     margin: 28px 0 0;
-    background: #22FF00;
-    color: #0a0a0a;
-    font-size: 13px;
-    line-height: 1.35;
+    background: transparent;
+    border: 2px solid #22FF00;
+    color: var(--fg);
   }
   .workshop-list li {
     display: grid;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: 78px 1fr;
     gap: 14px;
-    padding: 6px 0;
-    border-top: 1px solid rgba(0,0,0,0.12);
+    padding: 12px 0;
+    border-top: 1px solid rgba(0,0,0,0.10);
+    align-items: baseline;
   }
   .workshop-list li:first-child { border-top: none; padding-top: 0; }
   .workshop-list .year {
+    font-size: 13px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .workshop-list .info {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .workshop-list .title {
+    font-size: clamp(15px, 1.7vw, 19px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  .workshop-list .place {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.25;
   }
   .corners .right { text-align: right; }
 
@@ -652,7 +669,7 @@
   <div class="project-layout">
 
     <aside class="project-intro">
-      <span class="meta">Diplomprojekt · Filmakademie 2024 – 2025</span>
+      <span class="meta">Diploma · Filmakademie 2024 – 2025</span>
       <h2>Perle 3000</h2>
       <p>3D mobile game made as the Diploma project at Filmakademie
       Baden-Württemberg. Game concept, game design and team direction by
@@ -697,20 +714,56 @@
   <div class="project-layout">
 
     <aside class="project-intro">
-      <span class="meta">Praxis · 2018 –</span>
+      <span class="meta">Practice · since 2018</span>
       <h2>Workshops</h2>
-      <p>Sofia entwickelt und leitet Workshops zwischen Zeichnung, Druck,
-      3D, Elektronik und Code — mit Jugendlichen, jungen Erwachsenen und
-      Studierenden. Im Zentrum steht ein Körper- und Wahrnehmungstraining,
-      das innere Zustände in Linien, Farben und Formen übersetzt.</p>
+      <p>Sofia develops and runs workshops between drawing, print, 3D,
+      electronics and code — with teenagers, young adults and students.
+      At the centre is a body and awareness training that translates
+      interior states into lines, colours and forms.</p>
       <p><em>Think with your hands, celebrate mistakes, and let ideas grow.</em></p>
       <ul class="workshop-list">
-        <li><span class="year">ongoing</span><span>Tinkertank Mentoring</span></li>
-        <li><span class="year">2022</span><span>Walking the City — STORE Projects London</span></li>
-        <li><span class="year">2022</span><span>Expanded Bodies — STORE Projects London</span></li>
-        <li><span class="year">2022</span><span>Paint your Music — Folkwang</span></li>
-        <li><span class="year">2021</span><span>Liquid Bodies — Kunsthalle Düsseldorf</span></li>
-        <li><span class="year">2018 – 2020</span><span>Home sweet Home — KiR Konzeptbüro Essen</span></li>
+        <li>
+          <span class="year">ongoing</span>
+          <div class="info">
+            <span class="title">Tinkertank Mentoring</span>
+            <span class="place">Interactive Media Foundation</span>
+          </div>
+        </li>
+        <li>
+          <span class="year">2022</span>
+          <div class="info">
+            <span class="title">Walking the City</span>
+            <span class="place">STORE Projects, London</span>
+          </div>
+        </li>
+        <li>
+          <span class="year">2022</span>
+          <div class="info">
+            <span class="title">Expanded Bodies</span>
+            <span class="place">STORE Projects, London</span>
+          </div>
+        </li>
+        <li>
+          <span class="year">2022</span>
+          <div class="info">
+            <span class="title">Paint your Music</span>
+            <span class="place">Folkwang</span>
+          </div>
+        </li>
+        <li>
+          <span class="year">2021</span>
+          <div class="info">
+            <span class="title">Liquid Bodies</span>
+            <span class="place">Kunsthalle Düsseldorf</span>
+          </div>
+        </li>
+        <li>
+          <span class="year">2018 – 2020</span>
+          <div class="info">
+            <span class="title">Home sweet Home</span>
+            <span class="place">KiR Konzeptbüro Essen</span>
+          </div>
+        </li>
       </ul>
     </aside>
 
