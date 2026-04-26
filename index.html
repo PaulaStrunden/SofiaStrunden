@@ -167,6 +167,10 @@
     /* tighter project layout on mobile */
     .project-layout { padding: 12px; gap: 12px; }
     .project-intro { padding: 22px 20px; }
+
+    /* About overlay: show About panel before Index on mobile */
+    #overlay-about .overlay-grid > :nth-child(1) { order: 2; }
+    #overlay-about .overlay-grid > :nth-child(2) { order: 1; }
   }
   .corners a { text-decoration: underline; text-underline-offset: 2px; }
   .corners .right { text-align: right; }
