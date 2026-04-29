@@ -366,6 +366,11 @@
   /* crop-top: only show the top third of the image */
   .feed-item.crop-top { aspect-ratio: 12 / 5; overflow: hidden; }
   .feed-item.crop-top img { width: 100%; height: auto; display: block; }
+
+  /* Side-by-side portrait pair: enforce same height + crop to match */
+  .feed-item.portrait-pair { aspect-ratio: 9 / 16; overflow: hidden; }
+  .feed-item.portrait-pair img,
+  .feed-item.portrait-pair video { width: 100%; height: 100%; object-fit: cover; display: block; }
   @media (max-width: 800px) {
     .project-feed { grid-template-columns: 1fr; gap: 16px; padding: 0 0 80px 0; }
     .feed-item, .feed-item.half, .feed-item.third { grid-column: span 1; }
@@ -387,6 +392,15 @@
     display: block;
   }
   .feed-item figcaption { display: none; }
+  .feed-item figcaption.credit {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--on-bg);
+    opacity: 0.7;
+    margin-top: 6px;
+  }
   .feed-section {
     color: var(--on-bg);
     padding: 8px 4px;
@@ -626,7 +640,7 @@
       from body sketches and animated through motion capture data with the XBox
       Kinect — meet the viewer as a mirror of their experienced body in real-time.</p>
       <p>Cinema4D · Adobe CC · XBox Kinect.</p>
-      <a class="btn-download" href="koerpern/thesis.pdf" download>
+      <a class="btn-download" href="koerpern/thesis_koerpern_sofiastrunden.pdf" download>
         Download Thesis (PDF)
         <span class="arrow">↓</span>
       </a>
@@ -649,13 +663,13 @@
       <figure class="feed-item"><img src="koerpern/fluegelmensch-installation.jpg" alt="Flügelmensch, Ausstellung"></figure>
 
       <figure class="feed-item"><img src="koerpern/charly-tpose.jpg" alt="Charly T-pose"><figcaption>Charly, T-pose</figcaption></figure>
-      <figure class="feed-item"><img src="koerpern/fluegelmensch-exhibition-1.jpg" alt="Flügelmensch, Ausstellung"></figure>
-      <figure class="feed-item"><img src="koerpern/fluegelmensch-exhibition-2.jpg" alt="Flügelmensch, Ausstellung"></figure>
+      <figure class="feed-item"><img src="koerpern/fluegelmensch-exhibition-1.jpg" alt="Flügelmensch, Ausstellung"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
+      <figure class="feed-item"><img src="koerpern/fluegelmensch-exhibition-2.jpg" alt="Flügelmensch, Ausstellung"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
 
       <figure class="feed-item"><img src="koerpern/exhibition-folkwang-1.jpg" alt="Ausstellung"></figure>
-      <figure class="feed-item"><img src="koerpern/exhibition-folkwang-2.jpg" alt="Ausstellung"></figure>
-      <figure class="feed-item"><img src="koerpern/exhibition-folkwang-3.jpg" alt="Ausstellung"></figure>
-      <figure class="feed-item"><img src="koerpern/exhibition-folkwang-4.jpg" alt="Ausstellung"></figure>
+      <figure class="feed-item"><img src="koerpern/exhibition-folkwang-2.jpg" alt="Ausstellung"><figcaption class="credit">Foto: Sofia Strunden</figcaption></figure>
+      <figure class="feed-item"><img src="koerpern/exhibition-folkwang-3.jpg" alt="Ausstellung"><figcaption class="credit">Foto: Sofia Strunden</figcaption></figure>
+      <figure class="feed-item"><img src="koerpern/exhibition-folkwang-4.jpg" alt="Ausstellung"><figcaption class="credit">Foto: Sofia Strunden</figcaption></figure>
     </div>
 
   </div>
@@ -676,7 +690,7 @@
       catcalling and depicts a girl who reclaims the streets in a powerful
       yet humorous way.</p>
       <p>Unity3D · Blender · Adobe CC.</p>
-      <a class="btn-download" href="perle3000/game-design-document.pdf" download>
+      <a class="btn-download" href="perle3000/gdd_perle3000_sofiastrunden.pdf" download>
         Download Game Design Doc
         <span class="arrow">↓</span>
       </a>
@@ -777,8 +791,8 @@
 
     <div class="project-feed" data-feed>
       <figure class="feed-item"><video src="workshops/workshop-video.mp4" autoplay loop muted playsinline></video></figure>
-      <figure class="feed-item"><img src="workshops/workshop-01.jpg" alt="Workshop"></figure>
-      <figure class="feed-item"><img src="workshops/workshop-02.jpg" alt="Workshop"></figure>
+      <figure class="feed-item"><img src="workshops/workshop-01.jpg" alt="Workshop"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
+      <figure class="feed-item"><img src="workshops/workshop-02.jpg" alt="Workshop"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
       <figure class="feed-item"><img src="workshops/workshop-03.jpg" alt="Workshop"></figure>
 
       <figure class="feed-item third"><img src="workshops/meditation-flavienne.jpg" alt="Flavienne"></figure>
@@ -791,11 +805,11 @@
       <figure class="feed-item half"><img src="workshops/body-sketch-anouchka.jpg" alt="Anouchka"></figure>
       <figure class="feed-item half"><img src="workshops/body-sketch-flavienne.jpg" alt="Flavienne"></figure>
 
-      <figure class="feed-item"><img src="workshops/workshop-04.jpg" alt="Workshop"></figure>
-      <figure class="feed-item"><img src="workshops/workshop-05.jpg" alt="Workshop"></figure>
+      <figure class="feed-item half portrait-pair"><img src="workshops/workshop-extra-photo.jpg" alt="Workshop"></figure>
+      <figure class="feed-item half portrait-pair"><video src="workshops/workshop-extra-video.mp4" autoplay loop muted playsinline></video></figure>
 
-      <figure class="feed-item half"><img src="workshops/workshop-extra-photo.jpg" alt="Workshop"></figure>
-      <figure class="feed-item half"><video src="workshops/workshop-extra-video.mp4" autoplay loop muted playsinline></video></figure>
+      <figure class="feed-item"><img src="workshops/workshop-04.jpg" alt="Workshop"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
+      <figure class="feed-item"><img src="workshops/workshop-05.jpg" alt="Workshop"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
     </div>
 
   </div>
