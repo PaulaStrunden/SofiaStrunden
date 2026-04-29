@@ -411,12 +411,23 @@
   .feed-item figcaption { display: none; }
   .feed-item figcaption.credit {
     display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 26px 10px 8px 10px;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.04em;
-    color: var(--on-bg);
-    opacity: 0.7;
-    margin-top: 6px;
+    color: #ffffff;
+    background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .feed-item:hover figcaption.credit { opacity: 1; }
+  @media (hover: none) {
+    .feed-item figcaption.credit { opacity: 1; }
   }
   .feed-section {
     color: var(--on-bg);
