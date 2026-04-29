@@ -367,14 +367,31 @@
   .feed-item.crop-top { aspect-ratio: 12 / 5; overflow: hidden; }
   .feed-item.crop-top img { width: 100%; height: auto; display: block; }
 
-  /* Side-by-side portrait pair: enforce same height + crop to match */
-  .feed-item.portrait-pair { aspect-ratio: 9 / 16; overflow: hidden; }
-  .feed-item.portrait-pair img,
-  .feed-item.portrait-pair video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* Side-by-side portrait pair: wrapper holds two items in a 2-column subgrid */
+  .portrait-pair-wrap {
+    grid-column: span 6;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .portrait-pair-item {
+    margin: 0;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    background: transparent;
+  }
+  .portrait-pair-item img,
+  .portrait-pair-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   @media (max-width: 800px) {
     .project-feed { grid-template-columns: 1fr; gap: 16px; padding: 0 0 80px 0; }
     .feed-item, .feed-item.half, .feed-item.third { grid-column: span 1; }
     .feed-item.crop-top { aspect-ratio: auto; max-height: 240px; }
+    .portrait-pair-wrap { grid-column: span 1; gap: 12px; }
   }
   .project-feed::-webkit-scrollbar { width: 8px; }
   .project-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,.35); border-radius: 4px; }
@@ -805,8 +822,10 @@
       <figure class="feed-item half"><img src="workshops/body-sketch-anouchka.jpg" alt="Anouchka"></figure>
       <figure class="feed-item half"><img src="workshops/body-sketch-flavienne.jpg" alt="Flavienne"></figure>
 
-      <figure class="feed-item half portrait-pair"><video src="workshops/workshop-extra-video.mp4" autoplay loop muted playsinline></video></figure>
-      <figure class="feed-item half portrait-pair"><img src="workshops/workshop-extra-photo.jpg" alt="Workshop"></figure>
+      <div class="portrait-pair-wrap">
+        <figure class="portrait-pair-item"><img src="workshops/workshop-extra-photo.jpg" alt="Workshop"></figure>
+        <figure class="portrait-pair-item"><video src="workshops/workshop-extra-video.mp4" autoplay loop muted playsinline></video></figure>
+      </div>
 
       <figure class="feed-item"><img src="workshops/workshop-04.jpg" alt="Workshop"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
       <figure class="feed-item"><img src="workshops/workshop-05.jpg" alt="Workshop"><figcaption class="credit">Foto: Melanie Zanin</figcaption></figure>
